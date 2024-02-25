@@ -194,6 +194,44 @@ void tud_resume_cb(void)
 // USB HID
 //--------------------------------------------------------------------+
 
+static void send_all_hid_key_baord_report(uint32_t btn)
+{
+  // use to avoid send multiple consecutive zero report for keyboard
+  static bool has_keyboard_key = false;
+
+  if ( btn )
+  {
+    uint8_t report_buf[15];
+#if 0 // Test all key except control
+    memset(report_buf, 0xFF, sizeof(report_buf));
+    report_buf[0]  = 0x00;
+    report_buf[1]  = 0x00;
+    report_buf[10] = 0xFB;
+#else // Test characters and numbers
+    memset(report_buf, 0x00, sizeof(report_buf));
+    report_buf[2] =  0xFF; // 0X04-0X0B: A-H
+    report_buf[3] =  0xFF; // 0X0C-0X13: I-P
+    report_buf[4] =  0xFF; // 0X14-0X1B: Q-X
+    report_buf[5] =  0xFF; // 0X1C-0X23: Y-6
+    report_buf[6] =  0x0F; // 0X24-0X27: 7-0
+#endif
+    tud_hid_report(0, report_buf, sizeof(report_buf));
+
+    has_keyboard_key = true;
+
+  }else
+  {
+    // send empty key report if previously has key pressed
+    if (has_keyboard_key)
+    {
+      uint8_t report_buf[15];
+      memset(report_buf, 0x00, sizeof(report_buf));
+      tud_hid_report(0, report_buf, sizeof(report_buf));
+    }
+    has_keyboard_key = false;
+  }
+}
+
 static void send_hid_report(uint8_t report_id, uint32_t btn)
 {
   // skip if hid is not ready yet
@@ -203,6 +241,9 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
   {
     case REPORT_ID_KEYBOARD:
     {
+#if 1
+      send_all_hid_key_baord_report(btn);
+#else
       // use to avoid send multiple consecutive zero report for keyboard
       static bool has_keyboard_key = false;
 
@@ -219,9 +260,10 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
         if (has_keyboard_key) tud_hid_keyboard_report(REPORT_ID_KEYBOARD, 0, NULL);
         has_keyboard_key = false;
       }
+#endif
     }
     break;
-
+#if 0
     case REPORT_ID_MOUSE:
     {
       int8_t const delta = 5;
@@ -279,7 +321,7 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
       }
     }
     break;
-
+#endif
     default: break;
   }
 }

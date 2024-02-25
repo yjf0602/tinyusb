@@ -77,10 +77,43 @@ uint8_t const * tud_descriptor_device_cb(void)
 
 uint8_t const desc_hid_report[] =
 {
-  TUD_HID_REPORT_DESC_KEYBOARD( HID_REPORT_ID(REPORT_ID_KEYBOARD         )),
-  TUD_HID_REPORT_DESC_MOUSE   ( HID_REPORT_ID(REPORT_ID_MOUSE            )),
-  TUD_HID_REPORT_DESC_CONSUMER( HID_REPORT_ID(REPORT_ID_CONSUMER_CONTROL )),
-  TUD_HID_REPORT_DESC_GAMEPAD ( HID_REPORT_ID(REPORT_ID_GAMEPAD          ))
+  0x05, 0x01,                    // USAGE_PAGE (Generic Desktop)
+  0x09, 0x06,                    // USAGE (Keyboard)
+  0xa1, 0x01,                    // COLLECTION (Application)
+  0x05, 0x07,                    //   USAGE_PAGE (Keyboard)
+  0x19, 0xe0,                    //   USAGE_MINIMUM (Keyboard LeftControl)
+  0x29, 0xe7,                    //   USAGE_MAXIMUM (Keyboard Right GUI)
+  0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
+  0x25, 0x01,                    //   LOGICAL_MAXIMUM (1)
+  0x95, 0x08,                    //   REPORT_COUNT (8)
+  0x75, 0x01,                    //   REPORT_SIZE (1)
+  0x81, 0x02,                    //   INPUT (Data,Var,Abs)
+  0x95, 0x01,                    //   REPORT_COUNT (1)
+  0x75, 0x08,                    //   REPORT_SIZE (8)
+  0x81, 0x03,                    //   INPUT (Cnst,Var,Abs)
+  0x05, 0x07,                    //   USAGE_PAGE (Keyboard)
+  0x19, 0x04,                    //   USAGE_MINIMUM (Keyboard a and A)
+  0x29, 0x65,                    //   USAGE_MAXIMUM (Keyboard Application)
+  0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
+  0x25, 0x01,                    //   LOGICAL_MAXIMUM (1)
+  0x95, 0x62,                    //   REPORT_COUNT (98)
+  0x75, 0x01,                    //   REPORT_SIZE (1)
+  0x81, 0x02,                    //   INPUT (Data,Var,Abs)
+  0x95, 0x01,                    //   REPORT_COUNT (1)
+  0x75, 0x06,                    //   REPORT_SIZE (6)
+  0x81, 0x03,                    //   INPUT (Cnst,Var,Abs)
+  0x05, 0x08,                    //   USAGE_PAGE (LEDs)
+  0x19, 0x01,                    //   USAGE_MINIMUM (Num Lock)
+  0x29, 0x05,                    //   USAGE_MAXIMUM (Kana)
+  0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
+  0x25, 0x01,                    //   LOGICAL_MAXIMUM (1)
+  0x95, 0x05,                    //   REPORT_COUNT (5)
+  0x75, 0x01,                    //   REPORT_SIZE (1)
+  0x91, 0x02,                    //   OUTPUT (Data,Var,Abs)
+  0x95, 0x01,                    //   REPORT_COUNT (1)
+  0x75, 0x03,                    //   REPORT_SIZE (3)
+  0x91, 0x03,                    //   OUTPUT (Cnst,Var,Abs)
+  0xc0                           // END_COLLECTION
 };
 
 // Invoked when received GET HID REPORT DESCRIPTOR
